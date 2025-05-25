@@ -17,7 +17,7 @@ const routes = [
       {
         path: 'home',
         name: 'Home',
-        component: () => import('@/views/articlemanage/home/home.vue')
+        component: () => import('@/views/articlemanage/home/index.vue')
       },
       {
         path: 'articlelist',

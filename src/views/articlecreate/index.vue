@@ -5,13 +5,14 @@ import { createArticle } from '@/services/article.ts'
 import { createArticleTopic } from '@/services/article_topic.ts'
 import { getAllTopics } from '@/services/topic.ts'
 import { ElMessage } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const loading = ref(false)
 const topics = ref<{ id: string, name: string }[]>([])
 const selectedTopics = ref<string[]>([])
 
-// 获取所有话题
+// 获取所有标签
 const fetchTopics = async () => {
   try {
     const res = await getAllTopics()
@@ -19,7 +20,7 @@ const fetchTopics = async () => {
       topics.value = res.data
     }
   } catch (err: any) {
-    ElMessage.error(err.message || '获取话题列表失败')
+    ElMessage.error(err.message || '获取标签列表失败')
   }
 }
 
@@ -43,7 +44,7 @@ const createNewArticle = async () => {
     
     if (res.success && res.data) {
       const articleId = res.data.id
-      // 创建文章成功后，添加话题关联
+      // 创建文章成功后，添加标签关联
       if (selectedTopics.value.length > 0 && articleId) {
         const topicPromises = selectedTopics.value.map(topicId => 
           createArticleTopic({
@@ -70,7 +71,10 @@ const createNewArticle = async () => {
 <template>
   <div class="article-create">
     <div class="header">
-      <h1>新建文章</h1>
+      <div class="header-left">
+        <el-button @click="router.back()" :icon="ArrowLeft">返回</el-button>
+        <h1>新建文章</h1>
+      </div>
       <el-button type="primary" @click="createNewArticle" :loading="loading">创建</el-button>
     </div>
 
@@ -97,12 +101,12 @@ const createNewArticle = async () => {
         />
       </el-form-item>
 
-      <el-form-item label="话题">
+      <el-form-item label="标签">
         <el-select
           v-model="selectedTopics"
           multiple
           filterable
-          placeholder="请选择文章话题"
+          placeholder="请选择文章标签"
           style="width: 100%"
         >
           <el-option
@@ -133,6 +137,12 @@ const createNewArticle = async () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .header h1 {

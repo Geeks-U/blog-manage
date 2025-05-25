@@ -15,7 +15,7 @@ const dialogTitle = ref('')
 const currentTopic = ref<Topic>({ id: '', name: '' })
 const isEdit = ref(false)
 
-// 获取所有话题
+// 获取所有标签
 const fetchTopics = async () => {
   loading.value = true
   try {
@@ -26,33 +26,33 @@ const fetchTopics = async () => {
       ElMessage.error(res.message)
     }
   } catch (err) {
-    ElMessage.error('获取话题列表失败')
+    ElMessage.error('获取标签列表失败')
     console.error(err)
   } finally {
     loading.value = false
   }
 }
 
-// 打开创建话题对话框
+// 打开创建标签对话框
 const handleCreate = () => {
   isEdit.value = false
   currentTopic.value = { id: '', name: '' }
-  dialogTitle.value = '创建话题'
+  dialogTitle.value = '创建标签'
   dialogVisible.value = true
 }
 
-// 打开编辑话题对话框
+// 打开编辑标签对话框
 const handleEdit = (topic: Topic) => {
   isEdit.value = true
   currentTopic.value = { ...topic }
-  dialogTitle.value = '编辑话题'
+  dialogTitle.value = '编辑标签'
   dialogVisible.value = true
 }
 
-// 保存话题
+// 保存标签
 const handleSave = async () => {
   if (!currentTopic.value.name.trim()) {
-    ElMessage.warning('话题名称不能为空')
+    ElMessage.warning('标签名称不能为空')
     return
   }
 
@@ -60,7 +60,7 @@ const handleSave = async () => {
     if (isEdit.value) {
       const res = await updateTopicById(currentTopic.value)
       if (res.success) {
-        ElMessage.success('更新话题成功')
+        ElMessage.success('更新标签成功')
         dialogVisible.value = false
         fetchTopics()
       } else {
@@ -69,7 +69,7 @@ const handleSave = async () => {
     } else {
       const res = await createTopic({ name: currentTopic.value.name })
       if (res.success) {
-        ElMessage.success('创建话题成功')
+        ElMessage.success('创建标签成功')
         dialogVisible.value = false
         fetchTopics()
       } else {
@@ -77,28 +77,28 @@ const handleSave = async () => {
       }
     }
   } catch (err) {
-    ElMessage.error(isEdit.value ? '更新话题失败' : '创建话题失败')
+    ElMessage.error(isEdit.value ? '更新标签失败' : '创建标签失败')
     console.error(err)
   }
 }
 
-// 删除话题
+// 删除标签
 const handleDelete = async (topic: Topic) => {
   try {
-    await ElMessageBox.confirm('确定要删除该话题吗？', '提示', {
+    await ElMessageBox.confirm('确定要删除该标签吗？', '提示', {
       type: 'warning'
     })
     
     const res = await deleteTopicById(topic.id)
     if (res.success) {
-      ElMessage.success('删除话题成功')
+      ElMessage.success('删除标签成功')
       fetchTopics()
     } else {
       ElMessage.error(res.message)
     }
   } catch (err) {
     if (err !== 'cancel') {
-      ElMessage.error('删除话题失败')
+      ElMessage.error('删除标签失败')
       console.error(err)
     }
   }
@@ -112,8 +112,8 @@ onMounted(() => {
 <template>
   <div class="topic-manage">
     <div class="header">
-      <h2>话题管理</h2>
-      <el-button type="primary" @click="handleCreate">创建话题</el-button>
+      <h2>标签管理</h2>
+      <el-button type="primary" @click="handleCreate">创建标签</el-button>
     </div>
 
     <el-table
@@ -122,7 +122,7 @@ onMounted(() => {
       style="width: 100%"
       border
     >
-      <el-table-column prop="name" label="话题名称" min-width="200" />
+      <el-table-column prop="name" label="标签名称" min-width="200" />
       <el-table-column label="操作" width="150" fixed="right">
         <template #default="{ row }">
           <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
@@ -137,8 +137,8 @@ onMounted(() => {
       width="500px"
     >
       <el-form :model="currentTopic" label-width="80px">
-        <el-form-item label="话题名称">
-          <el-input v-model="currentTopic.name" placeholder="请输入话题名称" />
+        <el-form-item label="标签名称">
+          <el-input v-model="currentTopic.name" placeholder="请输入标签名称" />
         </el-form-item>
       </el-form>
       <template #footer>

@@ -23,7 +23,7 @@ export const createTopic = (topic: CreateTopic): Promise<CreateTopicResult> => {
       if (error) {
         reject({
           success: false,
-          message: '创建话题失败: ' + error.message,
+          message: '创建标签失败: ' + error.message,
           data: null
         })
         return
@@ -31,13 +31,13 @@ export const createTopic = (topic: CreateTopic): Promise<CreateTopicResult> => {
 
       resolve({
         success: true,
-        message: '创建话题成功',
+        message: '创建标签成功',
         data: data ? { id: data[0].id } : null
       })
     } catch (err) {
       reject({
         success: false,
-        message: '创建话题失败: ' + err,
+        message: '创建标签失败: ' + err,
         data: null
       })
     }
@@ -46,10 +46,10 @@ export const createTopic = (topic: CreateTopic): Promise<CreateTopicResult> => {
 
 // createTopic({ name: '人工智能' })
 //   .then((res) => {
-//     console.log('创建话题结果:', res)
+//     console.log('创建标签结果:', res)
 //   })
 //   .catch((err) => {
-//     console.error('创建话题错误:', err)
+//     console.error('创建标签错误:', err)
 //   })
 
 
@@ -75,7 +75,7 @@ export const getTopicById = (topicId: string): Promise<GetTopicResult> => {
       if (error) {
         reject({
           success: false,
-          message: '获取话题失败: ' + error.message,
+          message: '获取标签失败: ' + error.message,
           data: null
         })
         return
@@ -83,13 +83,13 @@ export const getTopicById = (topicId: string): Promise<GetTopicResult> => {
 
       resolve({
         success: true,
-        message: '获取话题成功',
+        message: '获取标签成功',
         data: data ? data[0] : null
       })
     } catch (err) {
       reject({
         success: false,
-        message: '获取话题失败: ' + err,
+        message: '获取标签失败: ' + err,
         data: null
       })
     }
@@ -98,10 +98,10 @@ export const getTopicById = (topicId: string): Promise<GetTopicResult> => {
 
 // getTopicById('eaec9257-eb4c-470a-8de9-152429d190de')
 //   .then((res) => {
-//     console.log('获取话题结果:', res)
+//     console.log('获取标签结果:', res)
 //   })
 //   .catch((err) => {
-//     console.error('获取话题错误:', err)
+//     console.error('获取标签错误:', err)
 //   })
 
 type GetAllTopicResult = {
@@ -119,7 +119,7 @@ export const getAllTopics = (): Promise<GetAllTopicResult> => {
       if (error) {
         reject({
           success: false,
-          message: '获取话题失败: ' + error.message,
+          message: '获取标签失败: ' + error.message,
           data: null
         })
         return
@@ -127,13 +127,13 @@ export const getAllTopics = (): Promise<GetAllTopicResult> => {
 
       resolve({
         success: true,
-        message: '获取话题成功',
+        message: '获取标签成功',
         data: data ? data : null
       })
     } catch (err) {
       reject({
         success: false,
-        message: '获取话题失败: ' + err,
+        message: '获取标签失败: ' + err,
         data: null
       })
     }
@@ -162,7 +162,7 @@ export const updateTopicById = (topic: UpdateTopic): Promise<UpdateTopicResult> 
       if (error) {
         reject({
           success: false,
-          message: '更新话题失败: ' + error.message,
+          message: '更新标签失败: ' + error.message,
           data: null
         })
         return
@@ -170,13 +170,13 @@ export const updateTopicById = (topic: UpdateTopic): Promise<UpdateTopicResult> 
 
       resolve({
         success: true,
-        message: '更新话题成功',
+        message: '更新标签成功',
         data: null
       })
     } catch (err) {
       reject({
         success: false,
-        message: '更新话题异常: ' + err,
+        message: '更新标签异常: ' + err,
         data: null
       })
     }
@@ -188,10 +188,10 @@ export const updateTopicById = (topic: UpdateTopic): Promise<UpdateTopicResult> 
 //   name: '机器学习'
 // })
 //   .then((res) => {
-//     console.log('更新话题结果:', res)
+//     console.log('更新标签结果:', res)
 //   })
 //   .catch((err) => {
-//     console.error('更新话题错误:', err)
+//     console.error('更新标签错误:', err)
 //   })
 
 
@@ -212,7 +212,7 @@ export const deleteTopicById = (topicId: string): Promise<DeleteTopicResult> => 
       if (error) {
         reject({
           success: false,
-          message: '删除话题失败: ' + error.message,
+          message: '删除标签失败: ' + error.message,
           data: null
         })
         return
@@ -220,13 +220,13 @@ export const deleteTopicById = (topicId: string): Promise<DeleteTopicResult> => 
 
       resolve({
         success: true,
-        message: '删除话题成功',
+        message: '删除标签成功',
         data: null
       })
     } catch (err) {
       reject({
         success: false,
-        message: '删除话题失败: ' + err,
+        message: '删除标签失败: ' + err,
         data: null
       })
     }
@@ -235,8 +235,8 @@ export const deleteTopicById = (topicId: string): Promise<DeleteTopicResult> => 
 
 // deleteTopicById('eaec9257-eb4c-470a-8de9-152429d190de')
 //   .then((res) => {
-//     console.log('删除话题结果:', res)
+//     console.log('删除标签结果:', res)
 //   })
 //   .catch((err) => {
-//     console.error('删除话题错误:', err)
+//     console.error('删除标签错误:', err)
 //   })

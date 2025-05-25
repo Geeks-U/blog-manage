@@ -5,6 +5,7 @@ import { getArticleByArticleId, updateArticleByArticleId } from '@/services/arti
 import { getTopicsByArticleId, createArticleTopic, deleteAllTopicsByArticleId } from '@/services/article_topic.ts'
 import { getAllTopics } from '@/services/topic.ts'
 import { ElMessage } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue'
 
 // 获取路由参数
 const route = useRoute()
@@ -27,7 +28,7 @@ const loading = ref(false)
 const topics = ref<{ id: string, name: string }[]>([])
 const selectedTopics = ref<string[]>([])
 
-// 获取所有话题
+// 获取所有标签
 const fetchTopics = async () => {
   try {
     const res = await getAllTopics()
@@ -35,11 +36,11 @@ const fetchTopics = async () => {
       topics.value = res.data
     }
   } catch (err: any) {
-    ElMessage.error(err.message || '获取话题列表失败')
+    ElMessage.error(err.message || '获取标签列表失败')
   }
 }
 
-// 获取文章的话题
+// 获取文章的标签
 const fetchArticleTopics = async () => {
   try {
     const res = await getTopicsByArticleId(articleId)
@@ -47,7 +48,7 @@ const fetchArticleTopics = async () => {
       selectedTopics.value = res.data.map(t => t.topic_id)
     }
   } catch (err: any) {
-    ElMessage.error(err.message || '获取文章话题失败')
+    ElMessage.error(err.message || '获取文章标签失败')
   }
 }
 
@@ -83,7 +84,7 @@ const saveArticle = async () => {
     })
     
     if (res.success) {
-      // 更新文章话题关联
+      // 更新文章标签关联
       await deleteAllTopicsByArticleId(articleId)
       if (selectedTopics.value.length > 0) {
         const topicPromises = selectedTopics.value.map(topicId => 
@@ -117,7 +118,10 @@ onMounted(() => {
 <template>
   <div class="article-edit">
     <div class="header">
-      <h1>编辑文章</h1>
+      <div class="header-left">
+        <el-button @click="router.back()" :icon="ArrowLeft">返回</el-button>
+        <h1>编辑文章</h1>
+      </div>
       <el-button type="primary" @click="saveArticle" :loading="loading">保存</el-button>
     </div>
 
@@ -144,12 +148,12 @@ onMounted(() => {
         />
       </el-form-item>
 
-      <el-form-item label="话题">
+      <el-form-item label="标签">
         <el-select
           v-model="selectedTopics"
           multiple
           filterable
-          placeholder="请选择文章话题"
+          placeholder="请选择文章标签"
           style="width: 100%"
         >
           <el-option
@@ -182,6 +186,12 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .header h1 {
