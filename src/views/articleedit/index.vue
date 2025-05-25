@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getArticleByArticleId, updateArticleByArticleId } from '@/services/article.ts'
+import { getTopicsByArticleId, createArticleTopic, deleteAllTopicsByArticleId } from '@/services/article_topic.ts'
+import { getAllTopics } from '@/services/topic.ts'
 import { ElMessage } from 'element-plus'
 
 // 获取路由参数
@@ -22,6 +24,32 @@ interface GetArticle {
 
 const article = ref<GetArticle | null>(null)
 const loading = ref(false)
+const topics = ref<{ id: string, name: string }[]>([])
+const selectedTopics = ref<string[]>([])
+
+// 获取所有话题
+const fetchTopics = async () => {
+  try {
+    const res = await getAllTopics()
+    if (res.success && res.data) {
+      topics.value = res.data
+    }
+  } catch (err: any) {
+    ElMessage.error(err.message || '获取话题列表失败')
+  }
+}
+
+// 获取文章的话题
+const fetchArticleTopics = async () => {
+  try {
+    const res = await getTopicsByArticleId(articleId)
+    if (res.success && res.data) {
+      selectedTopics.value = res.data.map(t => t.topic_id)
+    }
+  } catch (err: any) {
+    ElMessage.error(err.message || '获取文章话题失败')
+  }
+}
 
 // 获取文章详情
 const fetchArticle = async () => {
@@ -55,6 +83,18 @@ const saveArticle = async () => {
     })
     
     if (res.success) {
+      // 更新文章话题关联
+      await deleteAllTopicsByArticleId(articleId)
+      if (selectedTopics.value.length > 0) {
+        const topicPromises = selectedTopics.value.map(topicId => 
+          createArticleTopic({
+            article_id: articleId,
+            topic_id: topicId
+          })
+        )
+        await Promise.all(topicPromises)
+      }
+      
       ElMessage.success('保存成功')
       router.push('/articlemanage/articlelist')
     } else {
@@ -69,6 +109,8 @@ const saveArticle = async () => {
 
 onMounted(() => {
   fetchArticle()
+  fetchTopics()
+  fetchArticleTopics()
 })
 </script>
 
@@ -100,6 +142,23 @@ onMounted(() => {
           :rows="15"
           placeholder="请输入文章内容"
         />
+      </el-form-item>
+
+      <el-form-item label="话题">
+        <el-select
+          v-model="selectedTopics"
+          multiple
+          filterable
+          placeholder="请选择文章话题"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="topic in topics"
+            :key="topic.id"
+            :label="topic.name"
+            :value="topic.id"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="发布">

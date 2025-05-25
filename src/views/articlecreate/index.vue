@@ -1,11 +1,31 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { createArticle } from '@/services/article.ts'
+import { createArticleTopic } from '@/services/article_topic.ts'
+import { getAllTopics } from '@/services/topic.ts'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const loading = ref(false)
+const topics = ref<{ id: string, name: string }[]>([])
+const selectedTopics = ref<string[]>([])
+
+// 获取所有话题
+const fetchTopics = async () => {
+  try {
+    const res = await getAllTopics()
+    if (res.success && res.data) {
+      topics.value = res.data
+    }
+  } catch (err: any) {
+    ElMessage.error(err.message || '获取话题列表失败')
+  }
+}
+
+onMounted(() => {
+  fetchTopics()
+})
 
 // 新文章数据
 const newArticle = ref({
@@ -22,6 +42,18 @@ const createNewArticle = async () => {
     const res = await createArticle(newArticle.value)
     
     if (res.success && res.data) {
+      const articleId = res.data.id
+      // 创建文章成功后，添加话题关联
+      if (selectedTopics.value.length > 0 && articleId) {
+        const topicPromises = selectedTopics.value.map(topicId => 
+          createArticleTopic({
+            article_id: articleId,
+            topic_id: topicId
+          })
+        )
+        await Promise.all(topicPromises)
+      }
+      
       ElMessage.success('创建成功')
       router.push('/articlemanage/articlelist')
     } else {
@@ -63,6 +95,23 @@ const createNewArticle = async () => {
           :rows="15"
           placeholder="请输入文章内容"
         />
+      </el-form-item>
+
+      <el-form-item label="话题">
+        <el-select
+          v-model="selectedTopics"
+          multiple
+          filterable
+          placeholder="请选择文章话题"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="topic in topics"
+            :key="topic.id"
+            :label="topic.name"
+            :value="topic.id"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="发布">
