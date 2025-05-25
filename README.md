@@ -21,7 +21,7 @@ pnpm dev
 pnpm build
 ```
 
-vercel体验地址: blog-manage-eight.vercel.app
+vercel体验地址: [blog-manage-eight.vercel.app](https://blog-manage-eight.vercel.app/)
 
 suspabase体验配置
  * url: https://akxhjayyxljafocduyob.supabase.co
