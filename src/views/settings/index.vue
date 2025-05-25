@@ -34,7 +34,7 @@ const saveConfig = async () => {
     isLoading.value = true
     sessionStorage.setItem('SUPABASE_URL', supabaseUrl.value)
     sessionStorage.setItem('SUPABASE_ANON_KEY', supabaseKey.value)
-    await router.push('/home')
+    await router.push('/')
   } catch (error) {
     errorMessage.value = '保存配置失败，请重试'
   } finally {
