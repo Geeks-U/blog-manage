@@ -104,6 +104,41 @@ export const getTopicById = (topicId: string): Promise<GetTopicResult> => {
 //     console.error('获取话题错误:', err)
 //   })
 
+type GetAllTopicResult = {
+  success: boolean
+  message: string
+  data: GetTopic[] | null
+}
+
+export const getAllTopics = (): Promise<GetAllTopicResult> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data, error } = await supabase
+        .from(topicTableName)
+        .select('*')
+      if (error) {
+        reject({
+          success: false,
+          message: '获取话题失败: ' + error.message,
+          data: null
+        })
+        return
+      }
+
+      resolve({
+        success: true,
+        message: '获取话题成功',
+        data: data ? data : null
+      })
+    } catch (err) {
+      reject({
+        success: false,
+        message: '获取话题失败: ' + err,
+        data: null
+      })
+    }
+  })
+}
 
 interface UpdateTopic {
   id: string
