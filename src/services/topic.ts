@@ -1,0 +1,207 @@
+import { supabase } from "@/utils/request.ts"
+
+const topicTableName = 'topics'
+
+interface CreateTopic {
+  name: string
+}
+
+type CreateTopicResult = {
+  success: boolean
+  message: string
+  data: { id: string } | null
+}
+
+export const createTopic = (topic: CreateTopic): Promise<CreateTopicResult> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data, error } = await supabase
+        .from(topicTableName)
+        .insert([{ name: topic.name }])
+        .select('id')
+
+      if (error) {
+        reject({
+          success: false,
+          message: '创建话题失败: ' + error.message,
+          data: null
+        })
+        return
+      }
+
+      resolve({
+        success: true,
+        message: '创建话题成功',
+        data: data ? { id: data[0].id } : null
+      })
+    } catch (err) {
+      reject({
+        success: false,
+        message: '创建话题失败: ' + err,
+        data: null
+      })
+    }
+  })
+}
+
+// createTopic({ name: '人工智能' })
+//   .then((res) => {
+//     console.log('创建话题结果:', res)
+//   })
+//   .catch((err) => {
+//     console.error('创建话题错误:', err)
+//   })
+
+
+interface GetTopic {
+  id: string
+  name: string
+}
+
+type GetTopicResult = {
+  success: boolean
+  message: string
+  data: GetTopic | null
+}
+
+export const getTopicById = (topicId: string): Promise<GetTopicResult> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data, error } = await supabase
+        .from(topicTableName)
+        .select('*')
+        .eq('id', topicId)
+
+      if (error) {
+        reject({
+          success: false,
+          message: '获取话题失败: ' + error.message,
+          data: null
+        })
+        return
+      }
+
+      resolve({
+        success: true,
+        message: '获取话题成功',
+        data: data ? data[0] : null
+      })
+    } catch (err) {
+      reject({
+        success: false,
+        message: '获取话题失败: ' + err,
+        data: null
+      })
+    }
+  })
+}
+
+// getTopicById('eaec9257-eb4c-470a-8de9-152429d190de')
+//   .then((res) => {
+//     console.log('获取话题结果:', res)
+//   })
+//   .catch((err) => {
+//     console.error('获取话题错误:', err)
+//   })
+
+
+interface UpdateTopic {
+  id: string
+  name: string
+}
+
+type UpdateTopicResult = {
+  success: boolean
+  message: string
+  data: null
+}
+
+export const updateTopicById = (topic: UpdateTopic): Promise<UpdateTopicResult> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { error } = await supabase
+        .from(topicTableName)
+        .update({ name: topic.name })
+        .eq('id', topic.id)
+
+      if (error) {
+        reject({
+          success: false,
+          message: '更新话题失败: ' + error.message,
+          data: null
+        })
+        return
+      }
+
+      resolve({
+        success: true,
+        message: '更新话题成功',
+        data: null
+      })
+    } catch (err) {
+      reject({
+        success: false,
+        message: '更新话题异常: ' + err,
+        data: null
+      })
+    }
+  })
+}
+
+// updateTopicById({
+//   id: 'eaec9257-eb4c-470a-8de9-152429d190de',
+//   name: '机器学习'
+// })
+//   .then((res) => {
+//     console.log('更新话题结果:', res)
+//   })
+//   .catch((err) => {
+//     console.error('更新话题错误:', err)
+//   })
+
+
+type DeleteTopicResult = {
+  success: boolean
+  message: string
+  data: null
+}
+
+export const deleteTopicById = (topicId: string): Promise<DeleteTopicResult> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { error } = await supabase
+        .from(topicTableName)
+        .delete()
+        .eq('id', topicId)
+
+      if (error) {
+        reject({
+          success: false,
+          message: '删除话题失败: ' + error.message,
+          data: null
+        })
+        return
+      }
+
+      resolve({
+        success: true,
+        message: '删除话题成功',
+        data: null
+      })
+    } catch (err) {
+      reject({
+        success: false,
+        message: '删除话题失败: ' + err,
+        data: null
+      })
+    }
+  })
+}
+
+// deleteTopicById('eaec9257-eb4c-470a-8de9-152429d190de')
+//   .then((res) => {
+//     console.log('删除话题结果:', res)
+//   })
+//   .catch((err) => {
+//     console.error('删除话题错误:', err)
+//   })
